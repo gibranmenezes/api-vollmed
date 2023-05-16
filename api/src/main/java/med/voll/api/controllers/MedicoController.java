@@ -41,6 +41,12 @@ public class MedicoController {
                 .body(repository.findAllByAtivoTrue(paginacao).map(DadosListagemMedico::new));
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity detalhar(@PathVariable Long id) {
+        var medico = repository.getReferenceById(id);
+        return ResponseEntity.ok(new DadosDetalhamentoMedico(medico));
+    }
+
     @PutMapping
     @Transactional
     public ResponseEntity atualizar(@RequestBody @Valid DadosAtualizacaoMedico dados) {
@@ -59,11 +65,6 @@ public class MedicoController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity detalhar(@PathVariable Long id) {
-        var medico = repository.getReferenceById(id);
-        return ResponseEntity.ok(new DadosDetalhamentoMedico(medico));
-    }
 
 
 }
