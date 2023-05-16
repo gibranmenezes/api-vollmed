@@ -24,12 +24,12 @@ public class SecurityConfigurations {
                 .build();
     }
 
-    @Bean
+    @Bean //metodo que sabe como criar um authentication manager
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
     }
 
-    @Bean
+    @Bean //
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
     }
