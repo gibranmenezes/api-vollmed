@@ -1,4 +1,4 @@
-package med.voll.api.domain.validations;
+package med.voll.api.domain.validations.agendamento;
 
 import med.voll.api.infra.exceptions.ValidacaoException;
 import med.voll.api.domain.consultas.ConsultaRepository;
@@ -14,7 +14,7 @@ public class ValidaHorarioIndisponivelMedico implements ValidadorAgendamentoCons
 
 
     public void validar(DadosAgendamentoConsulta dados){
-        var horarioIndiponivel = repository.existsByMedicoIdAndData(dados.idMedico(), dados.data());
+        var horarioIndiponivel = repository.existsByMedicoIdAndDataAndMotivoCancelamentoIsNull(dados.idMedico(), dados.data());
 
         if ( horarioIndiponivel ) {
             throw new ValidacaoException("Horário indisponível para o médico.");

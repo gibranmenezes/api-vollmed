@@ -1,11 +1,14 @@
 package med.voll.api.domain.consultas;
 
+import med.voll.api.domain.validations.cancelamento.ValidaCancelamentoConsulta;
 import med.voll.api.infra.exceptions.ValidacaoException;
 import med.voll.api.domain.medico.Medico;
 import med.voll.api.domain.medico.MedicoRepository;
 import med.voll.api.domain.paciente.PacienteRepository;
-import med.voll.api.domain.validations.ValidadorAgendamentoConsultas;
+import med.voll.api.domain.validations.agendamento.ValidadorAgendamentoConsultas;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,6 +28,8 @@ public class AgendaDeConsultas {
     @Autowired
     private List<ValidadorAgendamentoConsultas> validadores;
 
+    @Autowired
+    private List<ValidaCancelamentoConsulta> validadoresCancelamento;
 
     public DadosDetalhamentoConsulta agendar(DadosAgendamentoConsulta dados){
         if ( !pacienteRepository.existsById(dados.idPaciente())
@@ -42,7 +47,7 @@ public class AgendaDeConsultas {
         if (medico == null) {
             throw new ValidacaoException("Não há médicos disponíveis");
         }
-        var consulta = new Consulta(null, medico, paciente, dados.data());
+        var consulta = new Consulta(null, medico, paciente, dados.data(), null);
 
         consultaRepository.save(consulta);
 
@@ -51,7 +56,18 @@ public class AgendaDeConsultas {
     }
 
     public void cancelarConsulta(DadosCancelamentoConsulta dados){
-        if (!consultaRepository.existsById(dado))
+
+        if (!consultaRepository.existsById(dados.idConsulta())) {
+            throw new ValidacaoException("Id da consulta informada não existe.");
+        }
+
+        validadoresCancelamento.forEach(v -> v.validar(dados));
+
+        var consulta = consultaRepository.getReferenceById(dados.idConsulta());
+        consulta.cancelar(dados.motivoCancelamento());
+
+        //consultaRepository.deleteById(dados.idConsulta());
+
     }
 
     private Medico escolherMedico(DadosAgendamentoConsulta dados) {

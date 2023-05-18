@@ -1,4 +1,4 @@
-package med.voll.api.domain.validations;
+package med.voll.api.domain.validations.agendamento;
 
 import med.voll.api.infra.exceptions.ValidacaoException;
 import med.voll.api.domain.consultas.ConsultaRepository;
@@ -18,7 +18,8 @@ public class ValidaPacienteComAgendamentoNoDia implements ValidadorAgendamentoCo
     public void validar(DadosAgendamentoConsulta dados){
         var horarioInicio = dados.data().withHour(this.HORARIO_INICIO);
         var horarioEncerramento = dados.data().withHour(this.HORARIO_ENCERRAMENTO);
-        var pacienteAgendadoNoDia = repository.existsByPacienteIdAndDataBetween(dados.idPaciente(), horarioInicio, horarioEncerramento);
+        var pacienteAgendadoNoDia = repository.
+                existsByPacienteIdAndDataBetweenAndMotivoCancelamentoIsNull(dados.idPaciente(), horarioInicio, horarioEncerramento);
 
         if (pacienteAgendadoNoDia) {
             throw new ValidacaoException("Paciente já possui consulta agendada para o dia");
