@@ -31,5 +31,9 @@ public class TratadorDeErros {
         }
 
     }
+    @ExceptionHandler(ValidacaoException.class)
+    public ResponseEntity tratarErroRegrasDeNegoCios(ValidacaoException ex){
+       return ResponseEntity.badRequest().body(ex.getMessage());
+    }
 
 }

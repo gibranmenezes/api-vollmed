@@ -1,5 +1,6 @@
 package med.voll.api.domain.medico;
 
+import med.voll.api.domain.consultas.DadosAgendamentoConsulta;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -21,4 +22,12 @@ public interface MedicoRepository extends JpaRepository<Medico, Long> {
             order by random()
             limit 1""")
     Medico escolherMedicoDisponivel(Especialidade especialidade, LocalDateTime data);
+
+    @Query("""
+            Select m.ativo
+            from Medico m
+            where
+            m.id = :id
+            """)
+    Boolean findAtivoByID(Long id);
 }
