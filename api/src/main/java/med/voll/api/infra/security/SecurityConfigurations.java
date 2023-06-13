@@ -23,10 +23,9 @@ public class SecurityConfigurations {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        return http.csrf().disable()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and().authorizeHttpRequests()
+        return http.csrf(csrf -> csrf.disable())
+                .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests()
                 .requestMatchers(HttpMethod.POST, "/login").permitAll()
                 .requestMatchers("/v3/api-docs/**","/swagger-ui.html", "swagger-ui/**").permitAll()
                 .anyRequest()
@@ -34,7 +33,7 @@ public class SecurityConfigurations {
                 .and()
                 //ordena a execução dos filters
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
-                .build();
+                 .build();
     }
 
     @Bean //metodo que sabe como criar um authentication manager

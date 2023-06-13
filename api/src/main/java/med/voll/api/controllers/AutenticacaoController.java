@@ -27,9 +27,9 @@ public class AutenticacaoController {
     @PostMapping
     public ResponseEntity efetuarLogin(@RequestBody @Valid DadosAutenticacao dados){
         //converte o dto dados em o  dto usado pela classe AuthenticationManager
-        var authenticationTokentoken = new UsernamePasswordAuthenticationToken(dados.login(), dados.senha());
+        var authenticationToken = new UsernamePasswordAuthenticationToken(dados.login(), dados.senha());
         //devolve o objeto que representa o usuario autenticado no banco de dados
-        var authentication = manager.authenticate(authenticationTokentoken);
+        var authentication = manager.authenticate(authenticationToken);
 
         var tokenJWT = tokenService.gerarToken((Usuario) authentication.getPrincipal());
 
