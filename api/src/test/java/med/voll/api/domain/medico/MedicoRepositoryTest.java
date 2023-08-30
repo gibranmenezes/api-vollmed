@@ -34,7 +34,7 @@ class MedicoRepositoryTest {
 
     @Test
     @DisplayName("Devolver null quando unico medico cadastrado não está diponivel na data")
-    void escolherMedicoDisponivel() {
+    void escolherMedicoDisponivelCenario1() {
         //setup
         var proximaSegunda10h = LocalDate.now()
                 .with(TemporalAdjusters.next(DayOfWeek.MONDAY))
@@ -47,6 +47,23 @@ class MedicoRepositoryTest {
         //assert
         var medicoLivre = medicoRepository.escolherMedicoDisponivel(Especialidade.CARDIOLOGIA, proximaSegunda10h);
         assertThat(medicoLivre).isNull();
+
+
+    }
+
+    @Test
+    @DisplayName("Devolver medico está diponivel na data")
+    public void escolherMedicoDisponivelCenario2() {
+        //setup
+        var proximaSegunda10h = LocalDate.now()
+                .with(TemporalAdjusters.next(DayOfWeek.MONDAY))
+                .atTime(10, 0);
+
+        var medico = cadastrarMedico("medico", "medico@email.com", "123534", Especialidade.valueOf("CARDIOLOGIA"));
+
+        //assert
+        var medicoLivre = medicoRepository.escolherMedicoDisponivel(Especialidade.CARDIOLOGIA, proximaSegunda10h);
+        assertThat(medicoLivre).isEqualTo(medico);
 
 
     }
@@ -84,7 +101,6 @@ class MedicoRepositoryTest {
                 dadosEndereco()
         );
     }
-
     private DadosEndereco dadosEndereco() {
         return new DadosEndereco(
                 "rua xpto",
